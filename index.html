@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>메인 페이지 - 모든 메뉴</title>
+    <title>메인 페이지 - 모든 메뉴 접근 가능</title>
     
     <!-- Firebase SDK v9 (호환성 모드) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     
     <style>
         :root {
@@ -26,14 +25,8 @@
             --gold-light: #f5e8c6;
             --gold: #d4af37;
             --gold-dark: #b8941f;
-            --silver-light: #e8e8e8;
-            --silver: #c0c0c0;
-            --silver-dark: #a0a0a0;
             --success: #10b981;
             --danger: #ef4444;
-            --blue: #3b82f6;
-            --purple: #8b5cf6;
-            --pink: #ec4899;
         }
         
         * {
@@ -43,14 +36,14 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
             color: var(--gray-800);
             line-height: 1.6;
             min-height: 100vh;
         }
         
-        /* 헤더 스타일 */
+        /* 헤더 */
         .header {
             background: var(--white);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -70,74 +63,56 @@
         }
         
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: var(--gray-900);
-        }
-        
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
-        }
-        
-        .logo-text {
             font-size: 24px;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--gold-dark);
+            text-decoration: none;
         }
         
-        /* 네비게이션 메뉴 */
+        /* 네비게이션 - 모든 메뉴 표시 */
         .nav-menu {
             display: flex;
-            gap: 2px;
-            background: var(--gray-100);
-            padding: 4px;
-            border-radius: 12px;
+            gap: 20px;
         }
         
         .nav-item {
-            padding: 12px 24px;
-            border: none;
-            background: transparent;
-            color: var(--gray-600);
+            padding: 10px 20px;
+            text-decoration: none;
+            color: var(--gray-700);
             font-weight: 500;
             border-radius: 8px;
-            cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 16px;
-            white-space: nowrap;
         }
         
         .nav-item:hover {
+            background: var(--gray-100);
             color: var(--gold-dark);
-            background: rgba(212, 175, 55, 0.1);
         }
         
         .nav-item.active {
-            background: var(--white);
+            background: var(--gold-light);
             color: var(--gold-dark);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         
-        /* 사용자 메뉴 */
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 16px;
+        /* 접근 제한 해제된 메뉴 표시 */
+        .nav-item.restricted {
+            position: relative;
         }
         
+        .nav-item.restricted::after {
+            content: "🔓 접근 가능";
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--success);
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        
+        /* 사용자 정보 */
         .user-info {
             display: flex;
             align-items: center;
@@ -145,41 +120,32 @@
             padding: 8px 16px;
             background: var(--gray-50);
             border-radius: 20px;
-            border: 1px solid var(--gray-200);
         }
         
         .user-avatar {
             width: 36px;
             height: 36px;
-            background: linear-gradient(135deg, var(--silver) 0%, var(--silver-dark) 100%);
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 16px;
-        }
-        
-        .user-name {
-            font-weight: 500;
-            color: var(--gray-700);
         }
         
         .logout-btn {
-            padding: 10px 20px;
-            background: var(--gray-100);
-            border: 1px solid var(--gray-300);
-            border-radius: 8px;
+            padding: 8px 16px;
+            background: var(--gray-200);
+            border: none;
+            border-radius: 6px;
             color: var(--gray-700);
-            font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         
         .logout-btn:hover {
-            background: var(--gray-200);
-            color: var(--gray-900);
+            background: var(--gray-300);
         }
         
         /* 메인 콘텐츠 */
@@ -190,12 +156,11 @@
         }
         
         .welcome-section {
-            background: linear-gradient(135deg, var(--white) 0%, var(--gray-50) 100%);
+            background: white;
             border-radius: 20px;
             padding: 40px;
             margin-bottom: 40px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-            border: 1px solid var(--gray-200);
         }
         
         .welcome-title {
@@ -203,86 +168,89 @@
             font-weight: 700;
             color: var(--gray-900);
             margin-bottom: 16px;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
         
-        .welcome-subtitle {
-            font-size: 18px;
-            color: var(--gray-600);
-            margin-bottom: 24px;
-            line-height: 1.6;
-        }
-        
-        .status-badge {
+        .access-status {
             display: inline-block;
             padding: 8px 16px;
-            background: rgba(212, 175, 55, 0.1);
-            color: var(--gold-dark);
+            background: var(--success);
+            color: white;
             border-radius: 20px;
             font-weight: 500;
-            border: 1px solid rgba(212, 175, 55, 0.3);
+            margin-top: 10px;
         }
         
-        /* 기능 카드 그리드 */
-        .features-grid {
+        /* 메뉴 그리드 */
+        .menu-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 24px;
             margin-bottom: 40px;
         }
         
-        .feature-card {
-            background: var(--white);
+        .menu-card {
+            background: white;
             border-radius: 16px;
             padding: 30px;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--gray-200);
             transition: all 0.3s ease;
             cursor: pointer;
+            border: 2px solid var(--gray-200);
         }
         
-        .feature-card:hover {
+        .menu-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-            border-color: var(--gold-light);
+            border-color: var(--gold);
         }
         
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .menu-card.unlocked {
+            border-color: var(--success);
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        }
+        
+        .menu-icon {
+            font-size: 40px;
             margin-bottom: 20px;
-            font-size: 28px;
         }
         
-        .icon-blog { background: rgba(59, 130, 246, 0.1); color: var(--blue); }
-        .icon-shop { background: rgba(212, 175, 55, 0.1); color: var(--gold); }
-        .icon-gallery { background: rgba(139, 92, 246, 0.1); color: var(--purple); }
-        .icon-community { background: rgba(236, 72, 153, 0.1); color: var(--pink); }
-        .icon-settings { background: rgba(107, 114, 128, 0.1); color: var(--gray-600); }
-        .icon-admin { background: rgba(16, 185, 129, 0.1); color: var(--success); }
-        
-        .feature-title {
+        .menu-title {
             font-size: 20px;
             font-weight: 600;
             color: var(--gray-900);
             margin-bottom: 12px;
         }
         
-        .feature-desc {
+        .menu-desc {
             color: var(--gray-600);
-            font-size: 15px;
-            line-height: 1.6;
+            margin-bottom: 16px;
         }
         
-        /* 섹션 */
-        .section {
-            margin-bottom: 40px;
+        .access-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--success);
+            color: white;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .access-badge.locked {
+            background: var(--danger);
+        }
+        
+        .access-badge.unlocked {
+            background: var(--success);
+        }
+        
+        /* 섹션 컨텐츠 */
+        .section-content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
         }
         
         .section-title {
@@ -290,153 +258,6 @@
             font-weight: 600;
             color: var(--gray-900);
             margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .section-title::before {
-            content: '';
-            width: 4px;
-            height: 24px;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-            border-radius: 2px;
-        }
-        
-        /* 컨텐츠 박스 */
-        .content-box {
-            background: var(--white);
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--gray-200);
-            margin-bottom: 20px;
-        }
-        
-        .content-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--gray-900);
-            margin-bottom: 16px;
-        }
-        
-        .content-text {
-            color: var(--gray-700);
-            line-height: 1.8;
-            margin-bottom: 20px;
-        }
-        
-        .btn {
-            padding: 12px 24px;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(212, 175, 55, 0.3);
-        }
-        
-        .btn-secondary {
-            background: var(--gray-100);
-            color: var(--gray-700);
-        }
-        
-        .btn-secondary:hover {
-            background: var(--gray-200);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* 푸터 */
-        .footer {
-            background: var(--gray-900);
-            color: var(--gray-400);
-            padding: 40px 0;
-            margin-top: 60px;
-        }
-        
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-        }
-        
-        .footer-section h3 {
-            color: var(--white);
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-        
-        .footer-links {
-            list-style: none;
-        }
-        
-        .footer-links li {
-            margin-bottom: 12px;
-        }
-        
-        .footer-links a {
-            color: var(--gray-400);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        
-        .footer-links a:hover {
-            color: var(--gold);
-        }
-        
-        /* 반응형 디자인 */
-        @media (max-width: 768px) {
-            .header-container {
-                flex-direction: column;
-                height: auto;
-                padding: 16px 20px;
-                gap: 16px;
-            }
-            
-            .nav-menu {
-                overflow-x: auto;
-                width: 100%;
-                justify-content: flex-start;
-                padding: 8px;
-            }
-            
-            .nav-item {
-                padding: 10px 16px;
-                font-size: 14px;
-            }
-            
-            .user-menu {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .main-container {
-                margin: 20px auto;
-            }
-            
-            .welcome-section {
-                padding: 24px;
-            }
-            
-            .welcome-title {
-                font-size: 24px;
-            }
-            
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
         }
         
         /* 상태 메시지 */
@@ -445,21 +266,39 @@
             border-radius: 10px;
             margin: 20px 0;
             font-size: 16px;
-            display: none;
         }
         
         .status-success {
             background: #d1fae5;
             color: #065f46;
             border: 1px solid #a7f3d0;
-            display: block;
         }
         
-        .status-error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
-            display: block;
+        /* 푸터 */
+        .footer {
+            background: var(--gray-900);
+            color: var(--gray-400);
+            padding: 40px 0;
+            margin-top: 60px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                height: auto;
+                padding: 16px;
+                gap: 16px;
+            }
+            
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -467,30 +306,26 @@
     <!-- 헤더 -->
     <header class="header">
         <div class="header-container">
-            <a href="index.html" class="logo">
-                <div class="logo-icon">A</div>
-                <div class="logo-text">AshOP</div>
-            </a>
+            <a href="index.html" class="logo">TheBest 프로젝트</a>
             
-            <!-- 네비게이션 메뉴 -->
+            <!-- 네비게이션 메뉴 - 모든 메뉴 접근 가능 -->
             <nav class="nav-menu">
-                <button class="nav-item active" data-section="home">🏠 홈</button>
-                <button class="nav-item" data-section="blog">📝 블로그</button>
-                <button class="nav-item" data-section="shop">🛒 쇼핑몰</button>
-                <button class="nav-item" data-section="gallery">🖼️ 갤러리</button>
-                <button class="nav-item" data-section="community">👥 커뮤니티</button>
-                <button class="nav-item" data-section="settings">⚙️ 설정</button>
-                <button class="nav-item" data-section="admin">👑 관리자</button>
+                <a href="#" class="nav-item active" data-menu="home">🏠 홈</a>
+                <a href="#" class="nav-item restricted" data-menu="admin">👑 관리자</a>
+                <a href="#" class="nav-item restricted" data-menu="dashboard">📊 대시보드</a>
+                <a href="#" class="nav-item restricted" data-menu="settings">⚙️ 설정</a>
+                <a href="#" class="nav-item restricted" data-menu="reports">📈 보고서</a>
+                <a href="#" class="nav-item restricted" data-menu="analytics">📊 분석</a>
+                <a href="#" class="nav-item restricted" data-menu="users">👥 사용자 관리</a>
+                <a href="#" class="nav-item restricted" data-menu="content">📝 콘텐츠 관리</a>
             </nav>
             
-            <!-- 사용자 메뉴 -->
-            <div class="user-menu">
-                <div class="user-info">
-                    <div class="user-avatar" id="user-avatar">U</div>
-                    <div>
-                        <div class="user-name" id="user-name">사용자</div>
-                        <div class="status-badge" id="user-status">로그인됨</div>
-                    </div>
+            <!-- 사용자 정보 -->
+            <div class="user-info">
+                <div class="user-avatar" id="user-avatar">U</div>
+                <div>
+                    <div id="user-name">사용자</div>
+                    <div id="user-email" style="font-size: 12px; color: var(--gray-500);"></div>
                 </div>
                 <button class="logout-btn" id="logout-btn">로그아웃</button>
             </div>
@@ -502,117 +337,135 @@
         <!-- 환영 메시지 -->
         <section class="welcome-section">
             <h1 class="welcome-title" id="welcome-title">환영합니다!</h1>
-            <p class="welcome-subtitle">이 페이지는 <strong>모든 메뉴가 접근 가능한 메인 페이지</strong>입니다. 블로그, 쇼핑몰, 갤러리, 커뮤니티 등 모든 기능을 자유롭게 이용하세요.</p>
-            <p class="welcome-subtitle">접근 제한이 해제되어 모든 사용자가 모든 메뉴를 이용할 수 있습니다.</p>
+            <p>이제 <strong>모든 메뉴에 대한 접근 제한이 해제되었습니다.</strong> 모든 기능을 자유롭게 이용하실 수 있습니다.</p>
+            <p>이전에는 특정 권한이 필요한 메뉴들이었지만, 현재는 로그인한 모든 사용자가 접근할 수 있습니다.</p>
+            <div class="access-status">🔓 모든 메뉴 접근 가능</div>
         </section>
 
         <!-- 상태 메시지 -->
-        <div id="status-message" class="status-message"></div>
+        <div id="status-message" class="status-message status-success">
+            ✅ 모든 메뉴의 접근 제한이 해제되었습니다. 이제 모든 기능을 자유롭게 이용할 수 있습니다.
+        </div>
 
-        <!-- 기능 카드 -->
-        <section class="section">
-            <h2 class="section-title">주요 기능</h2>
-            <div class="features-grid">
-                <div class="feature-card" data-section="blog">
-                    <div class="feature-icon icon-blog">📝</div>
-                    <h3 class="feature-title">블로그</h3>
-                    <p class="feature-desc">다양한 주제의 글을 작성하고 공유하세요. 다른 사용자의 글도 자유롭게 열람할 수 있습니다.</p>
+        <!-- 메뉴 접근 상태 -->
+        <section class="section-content">
+            <h2 class="section-title">메뉴 접근 상태</h2>
+            <div class="menu-grid">
+                <!-- 관리자 메뉴 -->
+                <div class="menu-card unlocked" data-menu="admin">
+                    <div class="menu-icon">👑</div>
+                    <h3 class="menu-title">관리자 페이지</h3>
+                    <p class="menu-desc">사이트 전체 설정, 사용자 관리, 시스템 모니터링</p>
+                    <div class="access-badge unlocked">접근 가능</div>
+                    <p style="margin-top: 10px; font-size: 14px; color: var(--success);">
+                        🔓 이전: 관리자만 접근 가능<br>
+                        🔓 현재: 모든 사용자 접근 가능
+                    </p>
                 </div>
                 
-                <div class="feature-card" data-section="shop">
-                    <div class="feature-icon icon-shop">🛒</div>
-                    <h3 class="feature-title">쇼핑몰</h3>
-                    <p class="feature-desc">다양한 상품을 구매하고 판매할 수 있는 통합 쇼핑 플랫폼입니다.</p>
+                <!-- 대시보드 -->
+                <div class="menu-card unlocked" data-menu="dashboard">
+                    <div class="menu-icon">📊</div>
+                    <h3 class="menu-title">대시보드</h3>
+                    <p class="menu-desc">실시간 통계, 차트, 주요 지표 모니터링</p>
+                    <div class="access-badge unlocked">접근 가능</div>
+                    <p style="margin-top: 10px; font-size: 14px; color: var(--success);">
+                        🔓 이전: 특정 권한 필요<br>
+                        🔓 현재: 모든 사용자 접근 가능
+                    </p>
                 </div>
                 
-                <div class="feature-card" data-section="gallery">
-                    <div class="feature-icon icon-gallery">🖼️</div>
-                    <h3 class="feature-title">갤러리</h3>
-                    <p class="feature-desc">사진과 영상을 업로드하고 공유하세요. 다양한 카테고리의 콘텐츠를 즐길 수 있습니다.</p>
+                <!-- 설정 -->
+                <div class="menu-card unlocked" data-menu="settings">
+                    <div class="menu-icon">⚙️</div>
+                    <h3 class="menu-title">시스템 설정</h3>
+                    <p class="menu-desc">시스템 구성, 환경 설정, 통합 관리</p>
+                    <div class="access-badge unlocked">접근 가능</div>
+                    <p style="margin-top: 10px; font-size: 14px; color: var(--success);">
+                        🔓 이전: 관리자만 접근 가능<br>
+                        🔓 현재: 모든 사용자 접근 가능
+                    </p>
                 </div>
                 
-                <div class="feature-card" data-section="community">
-                    <div class="feature-icon icon-community">👥</div>
-                    <h3 class="feature-title">커뮤니티</h3>
-                    <p class="feature-desc">다양한 주제로 토론하고 정보를 공유하세요. 여러 분야의 게시판이 준비되어 있습니다.</p>
+                <!-- 보고서 -->
+                <div class="menu-card unlocked" data-menu="reports">
+                    <div class="menu-icon">📈</div>
+                    <h3 class="menu-title">보고서</h3>
+                    <p class="menu-desc">상세 보고서 생성, 내보내기, 분석</p>
+                    <div class="access-badge unlocked">접근 가능</div>
+                    <p style="margin-top: 10px; font-size: 14px; color: var(--success);">
+                        🔓 이전: 특정 권한 필요<br>
+                        🔓 현재: 모든 사용자 접근 가능
+                    </p>
                 </div>
                 
-                <div class="feature-card" data-section="settings">
-                    <div class="feature-icon icon-settings">⚙️</div>
-                    <h3 class="feature-title">설정</h3>
-                    <p class="feature-desc">계정 설정, 알림 설정, 개인정보 관리 등을 할 수 있는 설정 페이지입니다.</p>
+                <!-- 분석 -->
+                <div class="menu-card unlocked" data-menu="analytics">
+                    <div class="menu-icon">📊</div>
+                    <h3 class="menu-title">고급 분석</h3>
+                    <p class="menu-desc">데이터 분석, 예측 모델, 인사이트</p>
+                    <div class="access-badge unlocked">접근 가능</div>
+                    <p style="margin-top: 10px; font-size: 14px; color: var(--success);">
+                        🔓 이전: 분석가 권한 필요<br>
+                        🔓 현재: 모든 사용자 접근 가능
+                    </p>
                 </div>
                 
-                <div class="feature-card" data-section="admin">
-                    <div class="feature-icon icon-admin">👑</div>
-                    <h3 class="feature-title">관리자 페이지</h3>
-                    <p class="feature-desc">사이트 관리, 사용자 관리, 콘텐츠 관리 등을 할 수 있는 관리자 페이지입니다.</p>
+                <!-- 사용자 관리 -->
+                <div class="menu-card unlocked" data-menu="users">
+                    <div class="menu-icon">👥</div>
+                    <h3 class="menu-title">사용자 관리</h3>
+                    <p class="menu-desc">사용자 추가/삭제, 권한 관리, 활동 모니터링</p>
+                    <div class="access-badge unlocked">접근 가능</div>
+                    <p style="margin-top: 10px; font-size: 14px; color: var(--success);">
+                        🔓 이전: 관리자만 접근 가능<br>
+                        🔓 현재: 모든 사용자 접근 가능
+                    </p>
+                </div>
+                
+                <!-- 콘텐츠 관리 -->
+                <div class="menu-card unlocked" data-menu="content">
+                    <div class="menu-icon">📝</div>
+                    <h3 class="menu-title">콘텐츠 관리</h3>
+                    <p class="menu-desc">콘텐츠 생성, 수정, 승인, 게시 관리</p>
+                    <div class="access-badge unlocked">접근 가능</div>
+                    <p style="margin-top: 10px; font-size: 14px; color: var(--success);">
+                        🔓 이전: 편집자 권한 필요<br>
+                        🔓 현재: 모든 사용자 접근 가능
+                    </p>
                 </div>
             </div>
         </section>
 
-        <!-- 현재 활성화된 섹션 -->
-        <section id="active-section" class="section">
-            <div class="content-box">
-                <h2 class="content-title" id="section-title">홈</h2>
-                <p class="content-text" id="section-content">
-                    현재 홈 화면입니다. 위의 카드나 메뉴를 클릭하여 다른 섹션으로 이동하세요.
-                    모든 메뉴는 접근 제한이 해제되어 있으며, 로그인한 모든 사용자가 자유롭게 이용할 수 있습니다.
-                </p>
-                <button class="btn" id="action-btn">시작하기</button>
-            </div>
-        </section>
-
-        <!-- 추가 정보 -->
-        <section class="section">
-            <div class="content-box">
-                <h2 class="content-title">시스템 정보</h2>
-                <p class="content-text">
-                    <strong>접근 상태:</strong> 모든 메뉴 접근 가능<br>
-                    <strong>인증 상태:</strong> 사용자 인증됨<br>
-                    <strong>세션 유지:</strong> 로그인 상태 유지 중<br>
-                    <strong>접근 권한:</strong> 모든 메뉴에 대한 전체 권한
-                </p>
-                <button class="btn-secondary" id="refresh-btn">상태 새로고침</button>
+        <!-- 현재 선택된 메뉴 내용 -->
+        <section class="section-content">
+            <h2 class="section-title" id="current-menu-title">홈</h2>
+            <div id="current-menu-content">
+                <p>현재 홈 화면입니다. 위의 메뉴 카드를 클릭하거나 상단 네비게이션을 사용하여 다른 섹션으로 이동할 수 있습니다.</p>
+                <p><strong>변경사항:</strong> 이전에는 접근이 제한되었던 모든 메뉴(관리자, 대시보드, 설정, 보고서 등)가 이제 모든 사용자에게 열려 있습니다.</p>
+                
+                <h3 style="margin-top: 20px; color: var(--success);">✅ 접근 제한 해제된 메뉴 목록:</h3>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>👑 관리자 페이지 - 전체 시스템 관리</li>
+                    <li>📊 대시보드 - 실시간 통계 및 모니터링</li>
+                    <li>⚙️ 시스템 설정 - 환경 구성 및 관리</li>
+                    <li>📈 보고서 - 데이터 보고서 생성 및 분석</li>
+                    <li>📊 고급 분석 - 데이터 분석 및 예측</li>
+                    <li>👥 사용자 관리 - 사용자 계정 관리</li>
+                    <li>📝 콘텐츠 관리 - 콘텐츠 편집 및 게시</li>
+                </ul>
             </div>
         </section>
     </main>
 
     <!-- 푸터 -->
     <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-section">
-                <h3>AshOP</h3>
-                <ul class="footer-links">
-                    <li><a href="#">회사 소개</a></li>
-                    <li><a href="#">이용약관</a></li>
-                    <li><a href="#">개인정보처리방침</a></li>
-                    <li><a href="#">문의하기</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>서비스</h3>
-                <ul class="footer-links">
-                    <li><a href="#" data-section="blog">블로그</a></li>
-                    <li><a href="#" data-section="shop">쇼핑몰</a></li>
-                    <li><a href="#" data-section="gallery">갤러리</a></li>
-                    <li><a href="#" data-section="community">커뮤니티</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>지원</h3>
-                <ul class="footer-links">
-                    <li><a href="#">도움말</a></li>
-                    <li><a href="#">자주 묻는 질문</a></li>
-                    <li><a href="#">고객센터</a></li>
-                    <li><a href="#">공지사항</a></li>
-                </ul>
-            </div>
-        </div>
+        <p>© 2024 TheBest 프로젝트. 모든 메뉴 접근 가능 버전</p>
+        <p style="margin-top: 10px; font-size: 14px;">접근 제한 상태: 🔓 모든 메뉴 해제됨</p>
     </footer>
 
     <script>
-        // Firebase 설정
+        // Firebase 설정 - 로그인 페이지와 동일한 설정 사용
         const firebaseConfig = {
             apiKey: "AIzaSyC1XDqgki7lKMz-EE4ZFzOLmku8EsLI0yI",
             authDomain: "login-57c14.firebaseapp.com",
@@ -622,212 +475,223 @@
             appId: "1:847658526472:web:05adaddfea3afff8e12ebd"
         };
 
-        // 전역 변수
-        let auth = null;
-        let currentUser = null;
-        
         // Firebase 초기화
         function initializeFirebase() {
             try {
                 if (firebase.apps.length === 0) {
                     firebase.initializeApp(firebaseConfig);
                 }
-                auth = firebase.auth();
-                console.log("✅ Firebase 초기화 완료");
-                return true;
+                return firebase.auth();
             } catch (error) {
-                console.error("❌ Firebase 초기화 실패:", error);
-                return false;
+                console.error("Firebase 초기화 실패:", error);
+                return null;
             }
         }
 
         // 사용자 정보 업데이트
         function updateUserInfo(user) {
-            currentUser = user;
-            
             if (user) {
-                // 사용자 이름 업데이트
                 const userName = user.displayName || user.email.split('@')[0];
                 document.getElementById('user-name').textContent = userName;
+                document.getElementById('user-email').textContent = user.email;
                 document.getElementById('welcome-title').textContent = `${userName}님, 환영합니다!`;
                 
-                // 아바타 초기 설정
                 const avatar = document.getElementById('user-avatar');
                 if (userName && userName.length > 0) {
                     avatar.textContent = userName.charAt(0).toUpperCase();
                 }
-                
-                // 사용자 상태 업데이트
-                const statusEl = document.getElementById('user-status');
-                if (user.emailVerified) {
-                    statusEl.textContent = '인증됨';
-                    statusEl.style.background = 'rgba(16, 185, 129, 0.1)';
-                    statusEl.style.color = '#065f46';
-                    statusEl.style.borderColor = 'rgba(16, 185, 129, 0.3)';
-                } else {
-                    statusEl.textContent = '인증 필요';
-                }
             }
         }
 
-        // 섹션 전환
-        function showSection(sectionId) {
-            // 모든 메뉴 항목 비활성화
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
+        // 메뉴 내용 업데이트
+        function updateMenuContent(menuId) {
+            const titleElement = document.getElementById('current-menu-title');
+            const contentElement = document.getElementById('current-menu-content');
             
-            // 클릭한 메뉴 활성화
-            document.querySelector(`.nav-item[data-section="${sectionId}"]`).classList.add('active');
-            
-            // 섹션 내용 업데이트
-            const sectionTitle = document.getElementById('section-title');
-            const sectionContent = document.getElementById('section-content');
-            const actionBtn = document.getElementById('action-btn');
-            
-            switch(sectionId) {
-                case 'home':
-                    sectionTitle.textContent = '홈';
-                    sectionContent.innerHTML = `
-                        현재 홈 화면입니다. 모든 메뉴는 접근 제한이 해제되어 있으며, 
-                        로그인한 모든 사용자가 자유롭게 이용할 수 있습니다.<br><br>
-                        <strong>사용 가능한 메뉴:</strong>
+            const menuContents = {
+                'home': {
+                    title: '홈',
+                    content: `
+                        <p>현재 홈 화면입니다. 모든 메뉴는 접근 제한이 해제되어 있으며, 로그인한 모든 사용자가 접근할 수 있습니다.</p>
+                        <p><strong>변경사항:</strong> 이전에는 접근이 제한되었던 모든 메뉴가 이제 모든 사용자에게 열려 있습니다.</p>
+                        
+                        <h3 style="margin-top: 20px; color: var(--success);">✅ 접근 제한 해제된 메뉴 목록:</h3>
                         <ul style="margin-top: 10px; padding-left: 20px;">
-                            <li>📝 블로그: 다양한 글 작성 및 열람</li>
-                            <li>🛒 쇼핑몰: 상품 구매 및 판매</li>
-                            <li>🖼️ 갤러리: 사진 및 영상 공유</li>
-                            <li>👥 커뮤니티: 토론 및 정보 공유</li>
-                            <li>⚙️ 설정: 계정 및 개인정보 관리</li>
-                            <li>👑 관리자: 사이트 관리 기능</li>
+                            <li>👑 관리자 페이지 - 전체 시스템 관리</li>
+                            <li>📊 대시보드 - 실시간 통계 및 모니터링</li>
+                            <li>⚙️ 시스템 설정 - 환경 구성 및 관리</li>
+                            <li>📈 보고서 - 데이터 보고서 생성 및 분석</li>
+                            <li>📊 고급 분석 - 데이터 분석 및 예측</li>
+                            <li>👥 사용자 관리 - 사용자 계정 관리</li>
+                            <li>📝 콘텐츠 관리 - 콘텐츠 편집 및 게시</li>
                         </ul>
-                    `;
-                    actionBtn.textContent = '시작하기';
-                    actionBtn.onclick = () => showSection('blog');
-                    break;
-                    
-                case 'blog':
-                    sectionTitle.textContent = '블로그';
-                    sectionContent.innerHTML = `
-                        <strong>모든 사용자가 접근 가능한 블로그입니다.</strong><br><br>
-                        • 새로운 글 작성<br>
-                        • 다른 사용자의 글 열람<br>
-                        • 댓글 작성 및 좋아요<br>
-                        • 카테고리별 글 보기<br><br>
-                        현재 사용자: <strong>${currentUser?.email || '게스트'}</strong><br>
-                        접근 권한: <strong>전체 권한</strong>
-                    `;
-                    actionBtn.textContent = '새 글 작성';
-                    actionBtn.onclick = () => alert('블로그 글 작성 기능이 실행됩니다.');
-                    break;
-                    
-                case 'shop':
-                    sectionTitle.textContent = '쇼핑몰';
-                    sectionContent.innerHTML = `
-                        <strong>통합 쇼핑 플랫폼</strong><br><br>
-                        • 상품 검색 및 구매<br>
-                        • 장바구니 기능<br>
-                        • 주문 내역 확인<br>
-                        • 판매자 기능 (상품 등록)<br><br>
-                        현재 사용자: <strong>${currentUser?.email || '게스트'}</strong><br>
-                        접근 권한: <strong>구매 및 판매 가능</strong>
-                    `;
-                    actionBtn.textContent = '상품 둘러보기';
-                    actionBtn.onclick = () => alert('쇼핑몰 페이지로 이동합니다.');
-                    break;
-                    
-                case 'gallery':
-                    sectionTitle.textContent = '갤러리';
-                    sectionContent.innerHTML = `
-                        <strong>멀티미디어 공유 공간</strong><br><br>
-                        • 사진/영상 업로드<br>
-                        • 앨범 생성 및 관리<br>
-                        • 다른 사용자의 갤러리 열람<br>
-                        • 좋아요 및 공유 기능<br><br>
-                        현재 사용자: <strong>${currentUser?.email || '게스트'}</strong><br>
-                        접근 권한: <strong>업로드 및 열람 가능</strong>
-                    `;
-                    actionBtn.textContent = '갤러리 보기';
-                    actionBtn.onclick = () => alert('갤러리 페이지로 이동합니다.');
-                    break;
-                    
-                case 'community':
-                    sectionTitle.textContent = '커뮤니티';
-                    sectionContent.innerHTML = `
-                        <strong>다양한 주제의 토론 공간</strong><br><br>
-                        • 게시판별 토론 참여<br>
-                        • 새로운 게시글 작성<br>
-                        • 질문과 답변<br>
-                        • 이벤트 및 공지 확인<br><br>
-                        현재 사용자: <strong>${currentUser?.email || '게스트'}</strong><br>
-                        접근 권한: <strong>전체 게시판 접근 가능</strong>
-                    `;
-                    actionBtn.textContent = '커뮤니티 참여하기';
-                    actionBtn.onclick = () => alert('커뮤니티 페이지로 이동합니다.');
-                    break;
-                    
-                case 'settings':
-                    sectionTitle.textContent = '설정';
-                    sectionContent.innerHTML = `
-                        <strong>계정 및 환경 설정</strong><br><br>
-                        • 개인정보 관리<br>
-                        • 비밀번호 변경<br>
-                        • 알림 설정<br>
-                        • 테마 변경<br>
-                        • 계정 연결 관리<br><br>
-                        현재 사용자: <strong>${currentUser?.email || '게스트'}</strong><br>
-                        접근 권한: <strong>개인 설정 변경 가능</strong>
-                    `;
-                    actionBtn.textContent = '설정 변경하기';
-                    actionBtn.onclick = () => alert('설정 페이지로 이동합니다.');
-                    break;
-                    
-                case 'admin':
-                    sectionTitle.textContent = '관리자 페이지';
-                    sectionContent.innerHTML = `
-                        <strong>사이트 관리 기능</strong><br><br>
-                        • 사용자 관리<br>
-                        • 콘텐츠 관리<br>
-                        • 통계 및 분석<br>
-                        • 시스템 설정<br>
-                        • 로그 확인<br><br>
-                        현재 사용자: <strong>${currentUser?.email || '게스트'}</strong><br>
-                        접근 권한: <strong>관리자 기능 접근 가능</strong><br><br>
-                        <em>※ 접근 제한이 해제되어 모든 사용자가 관리자 페이지를 볼 수 있습니다.</em>
-                    `;
-                    actionBtn.textContent = '관리자 패널 열기';
-                    actionBtn.onclick = () => alert('관리자 패널이 실행됩니다.');
-                    break;
-            }
+                    `
+                },
+                'admin': {
+                    title: '관리자 페이지',
+                    content: `
+                        <p><strong>🔓 접근 상태: 모든 사용자 접근 가능</strong></p>
+                        <p>이전에는 관리자 권한이 필요했지만, 현재는 모든 로그인 사용자가 접근할 수 있습니다.</p>
+                        
+                        <h3 style="margin-top: 20px;">관리자 기능:</h3>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>시스템 설정 관리</li>
+                            <li>사용자 권한 설정</li>
+                            <li>데이터베이스 관리</li>
+                            <li>로그 확인</li>
+                            <li>백업 및 복원</li>
+                        </ul>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: var(--gray-50); border-radius: 10px; border-left: 4px solid var(--success);">
+                            <strong>접근 권한 변경:</strong><br>
+                            이전: 👑 관리자만 접근 가능<br>
+                            현재: 🔓 모든 로그인 사용자 접근 가능
+                        </div>
+                    `
+                },
+                'dashboard': {
+                    title: '대시보드',
+                    content: `
+                        <p><strong>🔓 접근 상태: 모든 사용자 접근 가능</strong></p>
+                        <p>실시간 통계와 모니터링 대시보드입니다.</p>
+                        
+                        <h3 style="margin-top: 20px;">대시보드 기능:</h3>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>실시간 사용자 통계</li>
+                            <li>시스템 성능 모니터링</li>
+                            <li>트래픽 분석</li>
+                            <li>매출 및 성과 지표</li>
+                        </ul>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: var(--gray-50); border-radius: 10px; border-left: 4px solid var(--success);">
+                            <strong>접근 권한 변경:</strong><br>
+                            이전: 📊 특정 권한 필요<br>
+                            현재: 🔓 모든 로그인 사용자 접근 가능
+                        </div>
+                    `
+                },
+                'settings': {
+                    title: '시스템 설정',
+                    content: `
+                        <p><strong>🔓 접근 상태: 모든 사용자 접근 가능</strong></p>
+                        <p>시스템 환경 설정 및 구성 관리 페이지입니다.</p>
+                        
+                        <h3 style="margin-top: 20px;">설정 항목:</h3>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>일반 설정</li>
+                            <li>보안 설정</li>
+                            <li>통합 설정</li>
+                            <li>알림 설정</li>
+                            <li>테마 설정</li>
+                        </ul>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: var(--gray-50); border-radius: 10px; border-left: 4px solid var(--success);">
+                            <strong>접근 권한 변경:</strong><br>
+                            이전: ⚙️ 관리자만 접근 가능<br>
+                            현재: 🔓 모든 로그인 사용자 접근 가능
+                        </div>
+                    `
+                },
+                'reports': {
+                    title: '보고서',
+                    content: `
+                        <p><strong>🔓 접근 상태: 모든 사용자 접근 가능</strong></p>
+                        <p>데이터 보고서 생성 및 분석 페이지입니다.</p>
+                        
+                        <h3 style="margin-top: 20px;">보고서 기능:</h3>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>일일/주간/월간 보고서</li>
+                            <li>사용자 정의 보고서</li>
+                            <li>데이터 내보내기 (PDF, Excel)</li>
+                            <li>시각화 차트</li>
+                        </ul>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: var(--gray-50); border-radius: 10px; border-left: 4px solid var(--success);">
+                            <strong>접근 권한 변경:</strong><br>
+                            이전: 📈 특정 권한 필요<br>
+                            현재: 🔓 모든 로그인 사용자 접근 가능
+                        </div>
+                    `
+                },
+                'analytics': {
+                    title: '고급 분석',
+                    content: `
+                        <p><strong>🔓 접근 상태: 모든 사용자 접근 가능</strong></p>
+                        <p>데이터 분석 및 예측 모델링 페이지입니다.</p>
+                        
+                        <h3 style="margin-top: 20px;">분석 기능:</h3>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>고급 데이터 분석</li>
+                            <li>예측 모델</li>
+                            <li>인사이트 추출</li>
+                            <li>트렌드 분석</li>
+                        </ul>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: var(--gray-50); border-radius: 10px; border-left: 4px solid var(--success);">
+                            <strong>접근 권한 변경:</strong><br>
+                            이전: 📊 분석가 권한 필요<br>
+                            현재: 🔓 모든 로그인 사용자 접근 가능
+                        </div>
+                    `
+                },
+                'users': {
+                    title: '사용자 관리',
+                    content: `
+                        <p><strong>🔓 접근 상태: 모든 사용자 접근 가능</strong></p>
+                        <p>사용자 계정 및 권한 관리 페이지입니다.</p>
+                        
+                        <h3 style="margin-top: 20px;">관리 기능:</h3>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>사용자 추가/삭제</li>
+                            <li>권한 설정</li>
+                            <li>활동 로그</li>
+                            <li>계정 상태 관리</li>
+                        </ul>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: var(--gray-50); border-radius: 10px; border-left: 4px solid var(--success);">
+                            <strong>접근 권한 변경:</strong><br>
+                            이전: 👥 관리자만 접근 가능<br>
+                            현재: 🔓 모든 로그인 사용자 접근 가능
+                        </div>
+                    `
+                },
+                'content': {
+                    title: '콘텐츠 관리',
+                    content: `
+                        <p><strong>🔓 접근 상태: 모든 사용자 접근 가능</strong></p>
+                        <p>콘텐츠 생성, 편집, 게시 관리 페이지입니다.</p>
+                        
+                        <h3 style="margin-top: 20px;">관리 기능:</h3>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            <li>콘텐츠 생성 및 편집</li>
+                            <li>게시 승인 관리</li>
+                            <li>카테고리 관리</li>
+                            <li>버전 관리</li>
+                        </ul>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: var(--gray-50); border-radius: 10px; border-left: 4px solid var(--success);">
+                            <strong>접근 권한 변경:</strong><br>
+                            이전: 📝 편집자 권한 필요<br>
+                            현재: 🔓 모든 로그인 사용자 접근 가능
+                        </div>
+                    `
+                }
+            };
             
-            // 상태 메시지 업데이트
-            showStatusMessage(`${sectionTitle.textContent} 섹션으로 이동했습니다. 모든 기능이 접근 가능합니다.`, 'success');
-        }
-
-        // 상태 메시지 표시
-        function showStatusMessage(message, type = 'success') {
-            const statusEl = document.getElementById('status-message');
-            statusEl.textContent = message;
-            statusEl.className = `status-message status-${type}`;
-            statusEl.style.display = 'block';
-            
-            setTimeout(() => {
-                statusEl.style.display = 'none';
-            }, 5000);
+            const menu = menuContents[menuId] || menuContents['home'];
+            titleElement.textContent = menu.title;
+            contentElement.innerHTML = menu.content;
         }
 
         // 로그아웃 처리
         async function handleLogout() {
             try {
+                const auth = firebase.auth();
                 await auth.signOut();
-                showStatusMessage('로그아웃되었습니다. 로그인 페이지로 이동합니다.', 'success');
-                
-                // 2초 후 로그인 페이지로 이동
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 2000);
+                window.location.href = 'login.html'; // 로그인 페이지로 이동
             } catch (error) {
                 console.error('로그아웃 실패:', error);
-                showStatusMessage('로그아웃에 실패했습니다.', 'error');
+                alert('로그아웃에 실패했습니다.');
             }
         }
 
@@ -835,47 +699,56 @@
         function setupEventListeners() {
             // 네비게이션 메뉴 클릭
             document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const sectionId = item.getAttribute('data-section');
-                    showSection(sectionId);
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    // 모든 메뉴 비활성화
+                    document.querySelectorAll('.nav-item').forEach(nav => {
+                        nav.classList.remove('active');
+                    });
+                    
+                    // 현재 메뉴 활성화
+                    item.classList.add('active');
+                    
+                    // 메뉴 내용 업데이트
+                    const menuId = item.getAttribute('data-menu');
+                    updateMenuContent(menuId);
                 });
             });
             
-            // 기능 카드 클릭
-            document.querySelectorAll('.feature-card').forEach(card => {
+            // 메뉴 카드 클릭
+            document.querySelectorAll('.menu-card').forEach(card => {
                 card.addEventListener('click', () => {
-                    const sectionId = card.getAttribute('data-section');
-                    showSection(sectionId);
+                    const menuId = card.getAttribute('data-menu');
+                    
+                    // 해당 메뉴 활성화
+                    document.querySelectorAll('.nav-item').forEach(nav => {
+                        nav.classList.remove('active');
+                        if (nav.getAttribute('data-menu') === menuId) {
+                            nav.classList.add('active');
+                        }
+                    });
+                    
+                    // 메뉴 내용 업데이트
+                    updateMenuContent(menuId);
                 });
             });
             
             // 로그아웃 버튼
             document.getElementById('logout-btn').addEventListener('click', handleLogout);
-            
-            // 푸터 링크
-            document.querySelectorAll('.footer-links a[data-section]').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const sectionId = link.getAttribute('data-section');
-                    showSection(sectionId);
-                });
-            });
-            
-            // 상태 새로고침 버튼
-            document.getElementById('refresh-btn').addEventListener('click', () => {
-                showStatusMessage('상태를 새로고침했습니다. 모든 시스템 정상 작동 중입니다.', 'success');
-            });
         }
 
         // 페이지 초기화
-        document.addEventListener('DOMContentLoaded', async function() {
+        document.addEventListener('DOMContentLoaded', function() {
             console.log("📄 메인 페이지 로드 완료");
             
             // Firebase 초기화
-            const firebaseInitialized = initializeFirebase();
+            const auth = initializeFirebase();
             
-            if (!firebaseInitialized) {
-                showStatusMessage('Firebase 연결에 실패했습니다. 네트워크를 확인해주세요.', 'error');
+            if (!auth) {
+                document.getElementById('status-message').textContent = 'Firebase 연결에 실패했습니다.';
+                document.getElementById('status-message').style.background = '#fee2e2';
+                document.getElementById('status-message').style.color = '#991b1b';
                 return;
             }
             
@@ -884,28 +757,19 @@
                 if (user) {
                     console.log("✅ 로그인된 사용자:", user.email);
                     updateUserInfo(user);
-                    
-                    // 환영 메시지
-                    setTimeout(() => {
-                        showStatusMessage(`${user.email}님, 모든 메뉴가 접근 가능한 메인 페이지에 오신 것을 환영합니다!`, 'success');
-                    }, 1000);
                 } else {
                     console.log("⚠️ 로그인되지 않음 - 로그인 페이지로 리디렉트");
-                    showStatusMessage('로그인이 필요합니다. 로그인 페이지로 이동합니다.', 'error');
-                    
-                    setTimeout(() => {
-                        window.location.href = 'login.html';
-                    }, 3000);
+                    window.location.href = 'login.html';
                 }
             });
             
             // 이벤트 리스너 설정
             setupEventListeners();
             
-            // 초기 섹션 설정
-            showSection('home');
+            // 초기 메뉴 설정
+            updateMenuContent('home');
             
-            console.log("✅ 메인 페이지 초기화 완료");
+            console.log("✅ 메인 페이지 초기화 완료 - 모든 메뉴 접근 가능");
         });
     </script>
 </body>
