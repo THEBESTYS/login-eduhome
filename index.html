@@ -3,116 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로그인 | 회원가입</title>
+    <title>로그인 | 더베스트어학원</title>
     
-    <!-- Firebase SDK v9 (호환성 모드) -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <!-- Firebase SDK v8 (기존 thebest와 동일한 버전) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     
     <style>
-        /* 골드/실버 무채색 디자인 시스템 */
+        /* 더베스트어학원 테마에 맞는 디자인 */
         :root {
-            --white: #ffffff;
-            --gray-50: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-400: #9ca3af;
-            --gray-500: #6b7280;
-            --gray-600: #4b5563;
-            --gray-700: #374151;
-            --gray-800: #1f2937;
-            --gray-900: #111827;
-            --gold-light: #f5e8c6;
-            --gold: #d4af37;
-            --gold-dark: #b8941f;
-            --silver-light: #e8e8e8;
-            --silver: #c0c0c0;
-            --silver-dark: #a0a0a0;
-            --success: #10b981;
-            --danger: #ef4444;
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #e74c3c;
+            --accent: #f39c12;
+            --accent-dark: #e67e22;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray-light: #f8f9fa;
+            --gray: #6c757d;
+            --gray-dark: #343a40;
+            --success: #27ae60;
+            --warning: #f1c40f;
+            --danger: #e74c3c;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-size: 110%; /* 전체 폰트 크기 10% 증가 */
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
-            background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
-            color: var(--gray-800);
+            font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+            color: var(--dark);
             line-height: 1.6;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            font-size: 110%; /* 바디 폰트 크기 증가 */
         }
         
-        .auth-container {
+        .login-container {
             width: 100%;
-            max-width: 528px; /* 480px의 110% */
-            background: var(--white);
-            border-radius: 18px; /* 약간 증가 */
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15); /* 그림자 강화 */
+            max-width: 440px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
             overflow: hidden;
             animation: fadeIn 0.5s ease-out;
-            transform: scale(1.1); /* 전체 컨테이너 크기 10% 증가 */
-            transform-origin: center center;
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px) scale(1.1); }
-            to { opacity: 1; transform: translateY(0) scale(1.1); }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 36px;
+            color: var(--accent);
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .logo-text span {
+            color: var(--accent);
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-top: 5px;
         }
         
         .tabs {
             display: flex;
-            background: var(--gray-50);
-            border-bottom: 1px solid var(--gray-200);
+            background: var(--light);
+            border-bottom: 1px solid #ddd;
         }
         
         .tab-button {
             flex: 1;
-            padding: 22px 0; /* 패딩 증가 */
+            padding: 20px 0;
             background: none;
             border: none;
-            font-size: 18.7px; /* 17px의 110% */
-            font-weight: 500;
-            color: var(--gray-600);
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray);
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
         }
         
         .tab-button:hover {
-            color: var(--gray-800);
-            background: var(--gray-100);
+            color: var(--dark);
+            background: rgba(255, 255, 255, 0.2);
         }
         
         .tab-button.active {
-            color: var(--gold-dark);
-            font-weight: 600;
+            color: var(--primary);
         }
         
         .tab-button.active::after {
             content: '';
             position: absolute;
             bottom: 0;
-            left: 25%;
-            right: 25%;
+            left: 20%;
+            right: 20%;
             height: 3px;
-            background: var(--gold);
+            background: var(--accent);
             border-radius: 3px 3px 0 0;
         }
         
         .form-panel {
-            padding: 44px; /* 40px의 110% */
+            padding: 35px 30px;
             display: none;
         }
         
@@ -127,30 +151,31 @@
         }
         
         .form-title {
-            font-size: 26.4px; /* 24px의 110% */
+            font-size: 22px;
             font-weight: 700;
-            color: var(--gray-900);
-            margin-bottom: 35px; /* 32px의 110% */
+            color: var(--dark);
+            margin-bottom: 25px;
             text-align: center;
         }
         
         .form-subtitle {
-            font-size: 15.4px; /* 14px의 110% */
-            color: var(--gray-500);
+            font-size: 14px;
+            color: var(--gray);
             text-align: center;
-            margin-bottom: 35px; /* 32px의 110% */
+            margin-bottom: 30px;
+            line-height: 1.5;
         }
         
         .input-group {
-            margin-bottom: 24.2px; /* 22px의 110% */
+            margin-bottom: 20px;
         }
         
         .input-label {
             display: block;
-            font-size: 16.5px; /* 15px의 110% */
-            font-weight: 500;
-            color: var(--gray-700);
-            margin-bottom: 8.8px; /* 8px의 110% */
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
         }
         
         .input-label.required::after {
@@ -160,19 +185,19 @@
         
         .input-field {
             width: 100%;
-            padding: 15.4px 17.6px; /* 14px 16px의 110% */
-            font-size: 16.5px; /* 15px의 110% */
-            border: 2px solid var(--gray-300);
-            border-radius: 11px; /* 10px의 110% */
-            background: var(--white);
-            color: var(--gray-800);
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            color: var(--dark);
             transition: all 0.3s ease;
         }
         
         .input-field:focus {
             outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15); /* 골드 색상 적용 */
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
         }
         
         .input-field.error {
@@ -184,43 +209,43 @@
         }
         
         .input-field::placeholder {
-            color: var(--gray-400);
+            color: #aaa;
         }
         
         .field-note {
             display: block;
-            font-size: 14.3px; /* 13px의 110% */
-            color: var(--gray-500);
-            margin-top: 6.6px; /* 6px의 110% */
+            font-size: 13px;
+            color: var(--gray);
+            margin-top: 6px;
             line-height: 1.4;
         }
         
         .field-error {
             display: block;
-            font-size: 14.3px; /* 13px의 110% */
+            font-size: 13px;
             color: var(--danger);
-            margin-top: 6.6px; /* 6px의 110% */
+            margin-top: 6px;
             display: none;
         }
         
         .submit-button {
             width: 100%;
-            padding: 17.6px; /* 16px의 110% */
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%); /* 골드 그라데이션 */
-            color: var(--white);
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
             border: none;
-            border-radius: 11px; /* 10px의 110% */
-            font-size: 17.6px; /* 16px의 110% */
+            border-radius: 8px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 11px; /* 10px의 110% */
+            margin-top: 10px;
         }
         
         .submit-button:hover {
-            background: linear-gradient(135deg, var(--gold-dark) 0%, #a67c00 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3); /* 골드 색상 적용 */
+            background: linear-gradient(135deg, var(--accent-dark), #d35400);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
         }
         
         .submit-button:active {
@@ -232,75 +257,54 @@
             cursor: not-allowed;
         }
         
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 35px 0; /* 32px의 110% */
-            color: var(--gray-400);
-            font-size: 15.4px; /* 14px의 110% */
-        }
-        
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--gray-200);
-        }
-        
-        .divider span {
-            padding: 0 17.6px; /* 16px의 110% */
-            background: var(--white);
-        }
-        
         .links {
             text-align: center;
-            margin-top: 30.8px; /* 28px의 110% */
-            font-size: 15.4px; /* 14px의 110% */
-            color: var(--gray-600);
+            margin-top: 25px;
+            font-size: 14px;
+            color: var(--gray);
         }
         
         .links a {
-            color: var(--gold-dark);
+            color: var(--primary);
             text-decoration: none;
-            margin: 0 13.2px; /* 12px의 110% */
+            margin: 0 10px;
             transition: color 0.3s ease;
             font-weight: 500;
         }
         
         .links a:hover {
-            color: var(--gold);
+            color: var(--primary-dark);
             text-decoration: underline;
         }
         
         .checkbox-group {
-            margin-bottom: 22px; /* 20px의 110% */
+            margin-bottom: 20px;
         }
         
         .checkbox-item {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 15.4px; /* 14px의 110% */
+            margin-bottom: 15px;
         }
         
         .checkbox-input {
-            margin-top: 3.3px; /* 3px의 110% */
-            margin-right: 15.4px; /* 14px의 110% */
-            width: 22px; /* 20px의 110% */
-            height: 22px; /* 20px의 110% */
-            accent-color: var(--gold);
+            margin-top: 3px;
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
             cursor: pointer;
         }
         
         .checkbox-label {
-            font-size: 16.5px; /* 15px의 110% */
-            color: var(--gray-700);
+            font-size: 14px;
+            color: var(--gray-dark);
             line-height: 1.5;
             cursor: pointer;
         }
         
         .checkbox-label a {
-            color: var(--gold-dark);
+            color: var(--primary);
             text-decoration: none;
         }
         
@@ -308,75 +312,71 @@
             text-decoration: underline;
         }
         
-        .checkbox-label strong {
-            font-weight: 600;
-            color: var(--gray-900);
-        }
-        
         .terms-section {
-            background: var(--gray-50);
-            border: 2px solid var(--gray-200);
-            border-radius: 13.2px; /* 12px의 110% */
-            padding: 26.4px; /* 24px의 110% */
-            margin: 30.8px 0; /* 28px의 110% */
-            max-height: 264px; /* 240px의 110% */
+            background: var(--light);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            max-height: 200px;
             overflow-y: auto;
         }
         
         .terms-title {
-            font-size: 18.7px; /* 17px의 110% */
+            font-size: 16px;
             font-weight: 600;
-            color: var(--gray-900);
-            margin-bottom: 19.8px; /* 18px의 110% */
+            color: var(--dark);
+            margin-bottom: 15px;
         }
         
         hr {
             border: none;
             height: 1px;
-            background: var(--gray-200);
-            margin: 19.8px 0; /* 18px의 110% */
+            background: #ddd;
+            margin: 15px 0;
         }
         
         /* 상태 메시지 */
         .status-message {
-            padding: 13.2px 17.6px; /* 12px 16px의 110% */
-            border-radius: 8.8px; /* 8px의 110% */
-            margin-bottom: 22px; /* 20px의 110% */
-            font-size: 15.4px; /* 14px의 110% */
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
             display: none;
+            text-align: center;
         }
         
         .status-success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #a7f3d0;
+            background: #d5edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
             display: block;
         }
         
         .status-error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
             display: block;
         }
         
         .status-info {
-            background: #dbeafe;
-            color: #1e40af;
-            border: 1px solid #bfdbfe;
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
             display: block;
         }
         
         /* 로딩 스피너 */
         .spinner {
             display: inline-block;
-            width: 22px; /* 20px의 110% */
-            height: 22px; /* 20px의 110% */
-            border: 3px solid rgba(255,255,255,.3);
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
-            border-top-color: var(--white);
+            border-top-color: white;
             animation: spin 1s ease-in-out infinite;
-            margin-right: 11px; /* 10px의 110% */
+            margin-right: 10px;
             vertical-align: middle;
         }
         
@@ -384,34 +384,90 @@
             to { transform: rotate(360deg); }
         }
         
+        /* 푸터 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--light);
+            border-top: 1px solid #ddd;
+            font-size: 13px;
+            color: var(--gray);
+        }
+        
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
         @media (max-width: 480px) {
-            .auth-container {
-                border-radius: 13.2px; /* 12px의 110% */
-                transform: scale(1); /* 모바일에서는 원래 크기 유지 */
-            }
-            
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(20px); }
-                to { opacity: 1; transform: translateY(0); }
+            .login-container {
+                border-radius: 10px;
             }
             
             .form-panel {
-                padding: 26.4px; /* 24px의 110% */
+                padding: 25px 20px;
+            }
+            
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .logo-text {
+                font-size: 24px;
             }
             
             .tab-button {
-                font-size: 17.6px; /* 16px의 110% */
-                padding: 17.6px 0; /* 16px의 110% */
+                font-size: 15px;
+                padding: 15px 0;
             }
             
             .form-title {
-                font-size: 24.2px; /* 22px의 110% */
+                font-size: 20px;
             }
         }
+        
+        /* 리디렉션 안내 메시지 */
+        .redirect-message {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .redirect-target {
+            font-weight: bold;
+            color: var(--primary);
+        }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="auth-container">
+    <div class="login-container">
+        <!-- 헤더 -->
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-graduation-cap logo-icon"></i>
+                <div class="logo-text">
+                    <span>THE BEST</span> 어학원
+                </div>
+            </div>
+            <p>영어 교육의 새로운 기준</p>
+        </div>
+        
+        <!-- 리디렉션 메시지 -->
+        <div id="redirectMessage" class="redirect-message" style="display: none;">
+            로그인 후 <span class="redirect-target" id="redirectTarget"></span> 페이지로 이동합니다.
+        </div>
+        
         <!-- 탭 메뉴 -->
         <div class="tabs">
             <button class="tab-button active" data-tab="login">로그인</button>
@@ -421,7 +477,7 @@
         <!-- 로그인 폼 -->
         <div id="login-form" class="form-panel active">
             <h2 class="form-title">로그인</h2>
-            <p class="form-subtitle">계정이 없으시다면 회원가입을 진행해주세요</p>
+            <p class="form-subtitle">더베스트어학원 수강관리 시스템에 오신 것을 환영합니다</p>
             
             <!-- 상태 메시지 -->
             <div id="login-status" class="status-message"></div>
@@ -446,14 +502,12 @@
                 <a href="#" id="forgot-password">비밀번호 찾기</a>
                 <a href="#" data-tab="signup">회원가입</a>
             </div>
-            
-            <!-- 관리자 페이지 링크 삭제됨 -->
         </div>
         
         <!-- 회원가입 폼 -->
         <div id="signup-form" class="form-panel">
             <h2 class="form-title">회원가입</h2>
-            <p class="form-subtitle">빠르고 간편한 회원가입으로 다양한 혜택을 누려보세요</p>
+            <p class="form-subtitle">더베스트어학원 회원으로 가입하고 모든 서비스를 이용해보세요</p>
             
             <!-- 상태 메시지 -->
             <div id="signup-status" class="status-message"></div>
@@ -471,16 +525,9 @@
             </div>
             
             <div class="input-group">
-                <label class="input-label" for="phone">핸드폰 번호</label>
-                <input type="tel" id="phone" class="input-field" placeholder="예) 010-1234-5678">
-                <span class="field-note">하이픈(-)을 포함하여 입력해주세요</span>
-                <div class="field-error" id="phone-error"></div>
-            </div>
-            
-            <div class="input-group">
                 <label class="input-label required" for="signup-password">비밀번호</label>
                 <input type="password" id="signup-password" class="input-field" placeholder="비밀번호를 입력해주세요">
-                <span class="field-note">영문, 숫자, 특수문자를 포함한 8자 이상</span>
+                <span class="field-note">최소 6자 이상 입력해주세요</span>
                 <div class="field-error" id="signup-password-error"></div>
             </div>
             
@@ -515,11 +562,6 @@
                     <input type="checkbox" id="terms-privacy" class="checkbox-input term" required>
                     <label for="terms-privacy" class="checkbox-label">개인정보 수집 및 이용 동의 (필수) <a href="#" id="view-privacy-terms">보기</a></label>
                 </div>
-                
-                <div class="checkbox-item">
-                    <input type="checkbox" id="terms-marketing" class="checkbox-input term">
-                    <label for="terms-marketing" class="checkbox-label">이벤트 및 SMS 마케팅 정보 수신 동의 (선택)</label>
-                </div>
             </div>
             
             <button class="submit-button" id="signup-btn">
@@ -529,56 +571,143 @@
             <div class="links">
                 이미 계정이 있으신가요? <a href="#" data-tab="login">로그인</a>
             </div>
-            
-            <!-- 관리자 페이지 링크 삭제됨 -->
+        </div>
+        
+        <!-- 푸터 -->
+        <div class="footer">
+            <p>더베스트어학원 | 인천 연수구 컨벤시아대로 230번길 42 아라프라자 2층 207-1</p>
+            <p>전화: 032-252-9600 | 이메일: gcha3514@naver.com</p>
+            <p><a href="https://thebestys.github.io/thebest/" target="_blank">메인 홈페이지로 돌아가기</a></p>
         </div>
     </div>
 
     <script>
-        // ========== Firebase 설정 ==========
+        // ========== Firebase 설정 (thebest와 동일) ==========
         const firebaseConfig = {
-            apiKey: "AIzaSyC1XDqgki7lKMz-EE4ZFzOLmku8EsLI0yI",
+            apiKey: "AIzaSyCLg04u_zdp27A8hKotF8DIZp5sH8vwFdE",
             authDomain: "login-57c14.firebaseapp.com",
             projectId: "login-57c14",
-            storageBucket: "login-57c14.firebasestorage.app",
-            messagingSenderId: "847658526472",
-            appId: "1:847658526472:web:05adaddfea3afff8e12ebd"
+            storageBucket: "login-57c14.appspot.com",
+            messagingSenderId: "568290041777",
+            appId: "1:568290041777:web:6f70ed0ef606364856a2cc",
+            measurementId: "G-H5KJ2R3LCK"
         };
 
         // ========== 전역 변수 ==========
-        let auth = null;
-        let db = null;
-        let firebaseApp = null;
-
+        let currentUser = null;
+        let redirectUrl = null;
+        
+        // ========== 페이지 초기화 ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("📄 login-eduhome 페이지 로드됨");
+            
+            // 1. Firebase 초기화
+            initializeFirebase();
+            
+            // 2. URL 파라미터에서 리디렉션 URL 확인
+            checkRedirectUrl();
+            
+            // 3. 이벤트 리스너 설정
+            setupEventListeners();
+            
+            // 4. 로그인 폼 이메일 필드에 포커스
+            document.getElementById('email').focus();
+            
+            console.log("✅ 페이지 초기화 완료");
+        });
+        
         // ========== Firebase 초기화 ==========
         function initializeFirebase() {
             try {
                 console.log("🔥 Firebase 초기화 시도...");
                 
-                // 이미 초기화되었는지 확인
-                if (firebase.apps.length > 0) {
-                    firebaseApp = firebase.apps[0];
-                    console.log("✅ 이미 초기화된 Firebase 앱 사용");
-                } else {
-                    firebaseApp = firebase.initializeApp(firebaseConfig);
-                    console.log("✅ 새로운 Firebase 앱 초기화 성공");
-                }
+                // Firebase 초기화
+                firebase.initializeApp(firebaseConfig);
+                console.log("✅ Firebase 초기화 성공");
                 
-                auth = firebase.auth();
-                db = firebase.firestore();
+                // 현재 인증 상태 확인
+                firebase.auth().onAuthStateChanged((user) => {
+                    currentUser = user;
+                    if (user) {
+                        console.log("✅ 이미 로그인된 사용자:", user.email);
+                        
+                        // 이미 로그인된 경우 메인페이지로 이동
+                        if (!redirectUrl) {
+                            redirectToMainPage();
+                        }
+                    } else {
+                        console.log("🚪 로그인된 사용자 없음");
+                    }
+                });
                 
-                console.log("✅ Firebase 서비스 준비 완료");
-                console.log("프로젝트 ID:", firebaseApp.options.projectId);
-                console.log("Firestore 상태:", !!db ? "준비됨" : "실패");
-                
-                return true;
             } catch (error) {
                 console.error("❌ Firebase 초기화 실패:", error);
-                showStatus('login', 'Firebase 연결에 실패했습니다. 네트워크를 확인해주세요.', 'error');
-                return false;
+                showStatus('login', '시스템 연결에 실패했습니다. 네트워크를 확인해주세요.', 'error');
             }
         }
-
+        
+        // ========== 리디렉션 URL 확인 ==========
+        function checkRedirectUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const redirectParam = urlParams.get('redirect');
+            
+            if (redirectParam) {
+                redirectUrl = decodeURIComponent(redirectParam);
+                console.log("🔄 리디렉션 URL 감지됨:", redirectUrl);
+                
+                // 리디렉션 메시지 표시
+                const messageElement = document.getElementById('redirectMessage');
+                const targetElement = document.getElementById('redirectTarget');
+                
+                if (messageElement && targetElement) {
+                    // 페이지 이름 추출
+                    let pageName = "원하는";
+                    if (redirectUrl.includes('memberadmin')) pageName = "수강관리";
+                    else if (redirectUrl.includes('reservation')) pageName = "예약";
+                    else if (redirectUrl.includes('payment')) pageName = "수강료";
+                    
+                    targetElement.textContent = pageName;
+                    messageElement.style.display = 'block';
+                }
+            }
+        }
+        
+        // ========== 메인페이지로 이동 ==========
+        function redirectToMainPage() {
+            console.log("🏠 메인페이지로 이동합니다...");
+            
+            // 1. 부모 창에게 로그인 성공 메시지 전송 (메인페이지가 열려있을 경우)
+            if (window.opener) {
+                try {
+                    window.opener.postMessage('loginSuccess', 'https://thebestys.github.io');
+                    console.log("✅ 부모 창에게 로그인 성공 메시지 전송");
+                } catch (e) {
+                    console.warn("⚠️ 부모 창 통신 실패:", e);
+                }
+            }
+            
+            // 2. 리디렉션 URL이 있으면 해당 페이지로, 없으면 메인페이지로 이동
+            let targetUrl = 'https://thebestys.github.io/thebest/';
+            
+            if (redirectUrl) {
+                targetUrl = redirectUrl;
+                console.log("🔄 리디렉션 URL로 이동:", targetUrl);
+                
+                // 새 탭에서 리디렉션 URL 열기
+                window.open(targetUrl, '_blank');
+                
+                // 현재 창은 메인페이지로 이동
+                setTimeout(() => {
+                    window.location.href = 'https://thebestys.github.io/thebest/';
+                }, 1500);
+            } else {
+                // 바로 메인페이지로 이동
+                setTimeout(() => {
+                    window.location.href = targetUrl;
+                }, 1000);
+            }
+        }
+        
         // ========== UI 함수들 ==========
         function showStatus(formId, message, type = 'info') {
             const statusEl = document.getElementById(`${formId}-status`);
@@ -594,7 +723,7 @@
                 }, 5000);
             }
         }
-
+        
         function setLoading(buttonId, isLoading) {
             const button = document.getElementById(buttonId);
             if (!button) return;
@@ -609,7 +738,7 @@
                 button.disabled = false;
             }
         }
-
+        
         function showError(fieldId, message) {
             const errorEl = document.getElementById(`${fieldId}-error`);
             if (errorEl) {
@@ -619,7 +748,7 @@
                 if (inputEl) inputEl.classList.add('error');
             }
         }
-
+        
         function clearErrors(fieldIds) {
             fieldIds.forEach(fieldId => {
                 const errorEl = document.getElementById(`${fieldId}-error`);
@@ -630,7 +759,7 @@
                 if (inputEl) inputEl.classList.remove('error');
             });
         }
-
+        
         function showTab(tabName) {
             // 탭 버튼 활성화
             document.querySelectorAll('.tab-button').forEach(btn => {
@@ -653,23 +782,17 @@
                 setTimeout(() => document.getElementById('signup-email').focus(), 100);
             }
         }
-
+        
         // ========== 유효성 검사 함수 ==========
         function validateEmail(email) {
             const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return regex.test(email);
         }
-
+        
         function validatePassword(password) {
-            return password.length >= 8;
+            return password.length >= 6;
         }
-
-        function validatePhone(phone) {
-            if (!phone) return true;
-            const regex = /^\d{3}-\d{3,4}-\d{4}$/;
-            return regex.test(phone);
-        }
-
+        
         // ========== 회원가입 처리 ==========
         async function handleSignup() {
             console.log("📝 회원가입 시작");
@@ -677,7 +800,6 @@
             // 입력값 가져오기
             const email = document.getElementById('signup-email').value.trim();
             const username = document.getElementById('username').value.trim();
-            const phone = document.getElementById('phone').value.trim();
             const password = document.getElementById('signup-password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
             
@@ -697,16 +819,11 @@
                 hasError = true;
             }
             
-            if (!validatePhone(phone)) {
-                showError('phone', '올바른 핸드폰 번호 형식이 아닙니다. (예: 010-1234-5678)');
-                hasError = true;
-            }
-            
             if (!password) {
                 showError('signup-password', '비밀번호를 입력해주세요.');
                 hasError = true;
             } else if (!validatePassword(password)) {
-                showError('signup-password', '비밀번호는 8자 이상이어야 합니다.');
+                showError('signup-password', '비밀번호는 6자 이상이어야 합니다.');
                 hasError = true;
             }
             
@@ -734,63 +851,52 @@
             }
             
             // 모든 에러 초기화
-            clearErrors(['signup-email', 'username', 'phone', 'signup-password', 'confirm-password']);
+            clearErrors(['signup-email', 'username', 'signup-password', 'confirm-password']);
             setLoading('signup-btn', true);
             
             try {
                 console.log('1. Firebase Auth 사용자 생성 시도:', email);
                 
                 // 1. Firebase Auth에 사용자 생성
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
                 const user = userCredential.user;
                 
                 console.log('✅ 2. Firebase Auth 생성 성공:', user.uid);
                 
-                // 마케팅 동의 여부
-                const marketingAgreed = {
-                    email: document.getElementById('terms-marketing')?.checked || false,
-                    sms: false
-                };
-                
-                // 2. Firestore에 저장할 데이터
+                // 2. Firestore에 사용자 정보 저장 (thebest 시스템과 호환되도록)
                 const userData = {
                     uid: user.uid,
                     email: email,
-                    username: username,
-                    phone: phone || '',
-                    displayName: username,
-                    tier: 'bronze',
-                    points: 1000,
-                    status: 'active',
-                    signupMethod: 'email',
-                    emailVerified: false,
-                    marketingAgreed: marketingAgreed,
+                    name: username,
+                    role: 'student',
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 
                 console.log('3. Firestore 저장 시도:', userData);
                 
                 // 3. Firestore에 저장
-                await db.collection('ashop_users').doc(user.uid).set(userData);
+                await firebase.firestore().collection('users').doc(user.uid).set(userData);
                 
                 console.log('✅ 4. Firestore 저장 완료!');
                 
-                // 4. 이메일 인증 메일 발송
-                await user.sendEmailVerification();
-                console.log('📧 5. 이메일 인증 메일 발송됨');
+                // 4. 이메일 인증 메일 발송 (선택사항)
+                try {
+                    await user.sendEmailVerification();
+                    console.log('📧 이메일 인증 메일 발송됨');
+                } catch (emailError) {
+                    console.warn('이메일 인증 메일 발송 실패:', emailError);
+                }
                 
                 // 5. 성공 메시지 표시
                 showStatus('signup', 
-                    `🎉 ${username}님, 회원가입이 완료되었습니다!\n가입 축하 포인트 1,000점이 지급되었습니다.\n이메일 인증을 완료해주세요.`, 
+                    `🎉 ${username}님, 회원가입이 완료되었습니다!\n로그인 후 서비스를 이용해주세요.`, 
                     'success'
                 );
                 
                 // 6. 폼 초기화
                 document.getElementById('signup-email').value = '';
                 document.getElementById('username').value = '';
-                document.getElementById('phone').value = '';
                 document.getElementById('signup-password').value = '';
                 document.getElementById('confirm-password').value = '';
                 document.getElementById('terms-all').checked = false;
@@ -825,10 +931,6 @@
                         errorMessage = '이메일/비밀번호 회원가입이 비활성화되어 있습니다.';
                         showStatus('signup', errorMessage, 'error');
                         break;
-                    case 'permission-denied':
-                        errorMessage = '데이터베이스 접근 권한이 없습니다.';
-                        showStatus('signup', errorMessage, 'error');
-                        break;
                     default:
                         showStatus('signup', `${errorMessage}: ${error.message}`, 'error');
                 }
@@ -837,7 +939,7 @@
                 setLoading('signup-btn', false);
             }
         }
-
+        
         // ========== 로그인 처리 ==========
         async function handleLogin() {
             console.log("🔐 로그인 시작");
@@ -867,35 +969,22 @@
             try {
                 console.log('로그인 시도:', email);
                 
-                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
                 const user = userCredential.user;
                 
                 console.log('✅ 로그인 성공:', user.uid);
                 
-                // 로그인 시간 업데이트
-                if (db) {
-                    try {
-                        await db.collection('ashop_users').doc(user.uid).update({
-                            lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
-                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                        console.log('✅ 로그인 시간 업데이트 완료');
-                    } catch (updateError) {
-                        console.warn('로그인 시간 업데이트 실패 (무시 가능):', updateError);
-                    }
-                }
-                
                 // 성공 메시지
-                showStatus('login', `${user.email}님, 환영합니다!`, 'success');
+                showStatus('login', `${user.email}님, 환영합니다! 메인페이지로 이동합니다.`, 'success');
                 
                 // 입력 필드 초기화
                 document.getElementById('email').value = '';
                 document.getElementById('password').value = '';
                 
-                // 2초 후 홈페이지로 이동
+                // 1.5초 후 메인페이지로 이동
                 setTimeout(() => {
-                    window.location.href = '../index.html';
-                }, 2000);
+                    redirectToMainPage();
+                }, 1500);
                 
             } catch (error) {
                 console.error('❌ 로그인 실패:', error);
@@ -931,7 +1020,7 @@
                 setLoading('login-btn', false);
             }
         }
-
+        
         // ========== 비밀번호 재설정 ==========
         async function handleForgotPassword() {
             const email = prompt('비밀번호를 재설정할 이메일 주소를 입력해주세요:');
@@ -944,14 +1033,14 @@
             }
             
             try {
-                await auth.sendPasswordResetEmail(email);
+                await firebase.auth().sendPasswordResetEmail(email);
                 alert(`비밀번호 재설정 메일을 ${email}로 발송했습니다.\n이메일을 확인해주세요.`);
             } catch (error) {
                 console.error('비밀번호 재설정 실패:', error);
                 alert('비밀번호 재설정에 실패했습니다. 이메일 주소를 확인해주세요.');
             }
         }
-
+        
         // ========== 이벤트 리스너 설정 ==========
         function setupEventListeners() {
             console.log("🔗 이벤트 리스너 설정 시작");
@@ -1016,12 +1105,12 @@
             // 약관 보기
             document.getElementById('view-service-terms')?.addEventListener('click', (e) => {
                 e.preventDefault();
-                alert('서비스 이용약관 내용이 여기에 표시됩니다...');
+                alert('더베스트어학원 서비스 이용약관 내용이 여기에 표시됩니다.');
             });
             
             document.getElementById('view-privacy-terms')?.addEventListener('click', (e) => {
                 e.preventDefault();
-                alert('개인정보 수집 및 이용 약관 내용이 여기에 표시됩니다...');
+                alert('더베스트어학원 개인정보 수집 및 이용 약관 내용이 여기에 표시됩니다.');
             });
             
             // 엔터 키로 폼 제출
@@ -1040,37 +1129,6 @@
             
             console.log("✅ 이벤트 리스너 설정 완료");
         }
-
-        // ========== 페이지 초기화 ==========
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log("📄 DOM 로드 완료");
-            
-            // Firebase 초기화
-            const firebaseInitialized = initializeFirebase();
-            
-            if (firebaseInitialized) {
-                // '시스템 연결이 준비되었습니다' 메시지 제거됨
-                // 인증 상태 감시
-                auth.onAuthStateChanged((user) => {
-                    if (user) {
-                        console.log("👤 현재 로그인된 사용자:", user.email);
-                        if (user.emailVerified) {
-                            console.log("✅ 이메일 인증 완료됨");
-                        }
-                    } else {
-                        console.log("🚪 로그인된 사용자 없음");
-                    }
-                });
-            }
-            
-            // 이벤트 리스너 설정
-            setupEventListeners();
-            
-            // 로그인 폼 이메일 필드에 포커스
-            document.getElementById('email').focus();
-            
-            console.log("✅ 페이지 초기화 완료");
-        });
     </script>
 </body>
 </html>
